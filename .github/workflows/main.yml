@@ -1,0 +1,23 @@
+name: Build and deploy
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+jobs:
+  job_one:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH connection
+        uses:  appleboy/ssh-action@master
+        with: 
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          script: |
+            sudo rm -r test
+            git clone --branch main https://github.com/ManvelManucharyan/test
+            cd test
+            npm i
+            pm2 restart test
